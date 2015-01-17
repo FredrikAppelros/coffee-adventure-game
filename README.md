@@ -4,6 +4,8 @@ This is to be a laboration for an introductory programming course. It has yet to
 
 All exercises will be using [CoffeeScript](http://coffeescript.org/) and [Less](http://lesscss.org/).
 
+This particular exercise contains free assets from [Glitch](http://www.glitchthegame.com/) and [Game Art 2D](http://www.gameart2d.com/), as well as the font [04b-19](http://www.04.jp.org/).
+
 ## Installation
 
 First of all, [Node.js](http://nodejs.org/) and [npm](https://www.npmjs.com/) needs to be installed. Using npm, install [gulp](http://gulpjs.com/) globally:
