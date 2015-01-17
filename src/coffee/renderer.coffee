@@ -1,15 +1,10 @@
 world = require './world'
 player = require './player'
 
-font =
-  height: 40
-  family: 'game-font'
-
 class Renderer
   constructor: (@canvas, @assets) ->
     @ratio = @canvas.width / @canvas.height
     @ctx = @canvas.getContext '2d'
-    @ctx.font = font.height + 'px ' + font.family
     @ctx.fillStyle = '#fff'
     @ctx.strokeStyle = '#000'
     @ctx.lineWidth = 4
@@ -37,6 +32,16 @@ class Renderer
 
     asset.draw @ctx, sx, sy, sw, sh, dx, dy, dw, dh
 
+  drawText: (text, size, pos) ->
+      @ctx.font = size + 'px game-font'
+      measure = @ctx.measureText text
+
+      x = (@canvas.width - measure.width) / 2
+      y = size + pos
+
+      @ctx.fillText text, x, y
+      @ctx.strokeText text, x, y
+
   drawBackground: ->
     @drawCyclic @assets.background, @canvas.height, 2
 
@@ -57,19 +62,15 @@ class Renderer
 
     @assets.bird.draw @ctx, x, y
 
-  drawScore: (score) ->
-    text = @ctx.measureText score
-    x = (@canvas.width - text.width) / 2
-    y = font.height + 20
+  drawUI: (score, playing) ->
+    @drawText score, 40, 20
+    @drawText 'Game Over', 80, (@canvas.height - 80) / 2 if not playing
 
-    @ctx.fillText score, x, y
-    @ctx.strokeText score, x, y
-
-  render: (score) ->
+  render: (score, playing) ->
     @drawBackground()
     @drawGround()
     @drawCrates()
     @drawPlayer()
-    @drawScore score
+    @drawUI score, playing
 
 module.exports = Renderer

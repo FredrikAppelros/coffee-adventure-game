@@ -7,6 +7,9 @@ dt = 1 / hz
 flapForce = 5 * hz
 gravity = -20
 
+detectCollisions = ->
+  player.position.y <= 1
+
 simulate = (flapping) ->
   force = if flapping then flapForce else 0
 
@@ -30,6 +33,8 @@ simulate = (flapping) ->
   if player.position.y > world.height
     player.position.y = world.height
     player.velocity.y = 0
+
+  detectCollisions()
 
 exports.dt = dt
 exports.simulate = simulate

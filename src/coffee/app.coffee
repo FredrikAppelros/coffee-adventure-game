@@ -17,14 +17,14 @@ main = ->
   dt += (now - last) / 1000
   last = now
 
-  while dt >= physics.dt
-    physics.simulate flapping
+  while playing and dt >= physics.dt
+    playing = not physics.simulate flapping
     flapping = false
     dt -= physics.dt
 
-  renderer.render score
+  renderer.render score, playing
 
-  window.requestAnimationFrame main
+  window.requestAnimationFrame main if playing
 
 start = (assets) ->
   renderer = new Renderer canvas, assets
