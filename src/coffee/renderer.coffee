@@ -1,36 +1,15 @@
 world = require './world'
+ground = require './ground'
+crates = require './crates'
 player = require './player'
 
 class Renderer
   constructor: (@canvas, @assets) ->
-    @ratio = @canvas.width / @canvas.height
+    @offsetX = (@canvas.width - @assets.bird.width) / 2
     @ctx = @canvas.getContext '2d'
     @ctx.fillStyle = '#fff'
     @ctx.strokeStyle = '#000'
     @ctx.lineWidth = 4
-
-  drawCyclic: (asset, height, distance) ->
-    sx = ((player.position.x % (world.width * distance)) / (world.width * distance)) * asset.width
-    sy = 0
-    sw = asset.width / @ratio
-    sh = asset.height
-    dx = 0
-    dy = @canvas.height - height
-    dw = @canvas.width
-    dh = height
-
-    if sx + sw > asset.width
-      osw = sw
-      odw = dw
-      sw = asset.width - sx
-      dw = sw / osw * @canvas.width
-      asset.draw @ctx, sx, sy, sw, sh, dx, dy, dw, dh
-      sx = 0
-      sw = osw - sw
-      dx = dw
-      dw = odw - dw
-
-    asset.draw @ctx, sx, sy, sw, sh, dx, dy, dw, dh
 
   drawText: (text, size, pos) ->
       @ctx.font = size + 'px game-font'
@@ -42,16 +21,38 @@ class Renderer
       @ctx.fillText text, x, y
       @ctx.strokeText text, x, y
 
+  drawCyclic: (asset, y, distance) ->
+    x = -(player.position.x / world.width / distance * @canvas.width) % asset.width
+
+    while x < @canvas.width
+      asset.draw @ctx, x, y
+      x += asset.width
+
   drawBackground: ->
-    @drawCyclic @assets.background, @canvas.height, 2
+    @drawCyclic @assets.background, 0, 2
 
   drawGround: ->
-    @drawCyclic @assets.ground, @canvas.height / 10, 1
+    y = (world.height - ground.height) / world.height * @canvas.height
+    @drawCyclic @assets.ground, y, 1
 
   drawCrates: ->
+    asset = @assets.crate
+
+    size = crates.height / world.height * @canvas.height
+    x = (crates.position.x - player.position.x) / world.width * @canvas.width + @offsetX
+
+    y = 0
+    for i in [0...crates.top]
+      asset.draw @ctx, x, y, size, size
+      y += size
+
+    y = (world.height - ground.height - crates.height) / world.height * @canvas.height
+    for i in [0...crates.bottom]
+      asset.draw @ctx, x, y, size, size
+      y -= size
 
   drawPlayer: ->
-    x = (@canvas.width - @assets.bird.width) / 2
+    x = @offsetX
     y = (1 - (player.position.y / world.height)) * (@canvas.height - @assets.bird.height)
 
     tx = x + @assets.bird.width / 2

@@ -1,5 +1,5 @@
 assets = require './assets'
-physics = require './physics'
+Simulator = require './physics'
 Renderer = require './renderer'
 
 playing = true
@@ -10,6 +10,7 @@ last = new Date
 dt = 0
 
 canvas = document.getElementById 'canvas'
+simulator = new Simulator
 renderer = undefined
 
 main = ->
@@ -17,10 +18,10 @@ main = ->
   dt += (now - last) / 1000
   last = now
 
-  while playing and dt >= physics.dt
-    playing = not physics.simulate flapping
+  while playing and dt >= simulator.dt
+    simulator.simulate flapping
     flapping = false
-    dt -= physics.dt
+    dt -= simulator.dt
 
   renderer.render score, playing
 
@@ -34,5 +35,14 @@ onClick = (event) ->
   flapping = true
   event.stopPropagation()
 
+onCollision = ->
+  playing = false
+
+onScore = ->
+  score++
+
 canvas.addEventListener 'click', onClick
+simulator.on 'collision', onCollision
+simulator.on 'score', onScore
+
 assets.loadAssets start
