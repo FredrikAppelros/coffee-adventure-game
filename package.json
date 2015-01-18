@@ -23,5 +23,8 @@
     "less-plugin-autoprefix": "^1.1.0",
     "less-plugin-clean-css": "^1.4.0",
     "vinyl-transform": "^1.0.0"
+  },
+  "dependencies": {
+    "q": "^1.1.2"
   }
 }
