@@ -25,9 +25,7 @@ assets =
   bird: new Asset 'img/bird.png'
   crate: new Asset 'img/crate.png'
 
-loadAssets = (callback) ->
-  promises = (a.promise for name, a of assets)
-  Q.all(promises).then ->
-    callback assets
+loadAssets = ->
+  Q.all(a.promise for name, a of assets).then -> assets
 
 exports.loadAssets = loadAssets

@@ -6,7 +6,12 @@ This is to be a laboration for an introductory programming course. It has yet to
 
 All exercises will be using [CoffeeScript](http://coffeescript.org/) and [Less](http://lesscss.org/).
 
-This particular exercise contains free assets from [Glitch](http://www.glitchthegame.com/) and [Game Art 2D](http://www.gameart2d.com/), as well as the font [04b-19](http://www.04.jp.org/).
+This particular exercise contains free assets from [Glitch](http://www.glitchthegame.com/), [Game Art 2D](http://www.gameart2d.com/) and [Freesound](http://www.freesound.org/), as well as the font [04b-19](http://www.04.jp.org/).
+
+The actual sounds being used are found here:
+
+ * [Flapping sound](http://www.freesound.org/people/ani_music/sounds/244981/)
+ * [Collision sound](http://www.freesound.org/people/BristolStories/sounds/46136/)
 
 ## Installation
 
