@@ -1,7 +1,6 @@
 events = require 'events'
 World = require './world'
 Ground = require './ground'
-crate = require './crate'
 
 class Simulator extends events.EventEmitter
   constructor: (@camera, @entities, @assets, @gravity = -20, hz = 100) ->
@@ -48,8 +47,8 @@ class Simulator extends events.EventEmitter
       if not stack.cleared and player.position.x >= stack.pos
         stack.cleared = true
         @emit 'score'
-      if stack.pos < player.position.x - 7
-        crate.moveStack stack, stack.pos + 15
+      if stack.cleared and not stack.isVisible @camera, player
+        stack.move stack.pos + 15
 
     @detectCollisions()
 

@@ -5,7 +5,7 @@ Camera = require './camera'
 World = require './world'
 Ground = require './ground'
 Player = require './player'
-crate = require './crate'
+Stack = require './crate'
 Simulator = require './physics'
 Renderer = require './renderer'
 
@@ -38,14 +38,15 @@ main = ->
 
 start = ([assets, sounds]) ->
   camera = new Camera canvas
+  world = new World assets.world
   entities =
-    world: new World assets.world
+    world: world
     ground: new Ground assets.ground
     player: new Player assets.bird
     stacks: [
-      crate.spawnStack(assets.crate, 7)
-      crate.spawnStack(assets.crate, 12)
-      crate.spawnStack(assets.crate, 17)
+      new Stack assets.crate, world, 7
+      new Stack assets.crate, world, 12
+      new Stack assets.crate, world, 17
     ]
 
   simulator = new Simulator camera, entities, assets

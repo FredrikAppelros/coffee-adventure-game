@@ -1,4 +1,5 @@
 Entity = require './entity'
+random = require './random'
 
 class Crate extends Entity
   constructor: (asset, pos) ->
@@ -10,50 +11,33 @@ class Crate extends Entity
     other.position.y >= @position.y - other.height and
     other.position.y < @position.y + @height
 
-randInt = (max) ->
-  Math.floor Math.random() * max
+class Stack
+  constructor: (asset, world, @pos, gap = 3) ->
+    @maxHeight = world.height - 1
+    @height = @maxHeight - gap
+    @crates = (new Crate asset, x: 0, y: 0 for i in [0...@height])
 
-spawnStack = (asset, x, gap = 3) ->
-  # TODO: base positions on sizes, not constants
-  num = 8 - gap
-  top = randInt num
-  bottom = num - top
+    @move @pos
 
-  crates = []
-  for i in [0...top]
-    pos =
-      x: x
-      y: 8 - i
-    crate = new Crate asset, pos
-    crates.push crate
-  for i in [0...bottom]
-    pos =
-      x: x
-      y: i + 1
-    crate = new Crate asset, pos
-    crates.push crate
+  move: (pos) ->
+    @pos = pos
+    @cleared = false
 
-  stack =
-    pos: x
-    cleared: false
-    crates: crates
+    top = random.randInt @height
+    bottom = @height - top
 
-moveStack = (stack, x, gap = 3) ->
-  num = 8 - gap
-  top = randInt num
-  bottom = num - top
+    for i in [0...top]
+      crate = @crates[i]
+      crate.position.x = @pos
+      crate.position.y = @maxHeight - i
+    for i in [0...bottom]
+      crate = @crates[top + i]
+      crate.position.x = @pos
+      crate.position.y = i + 1
 
-  for i in [0...top]
-    crate = stack.crates[i]
-    crate.position.x = x
-    crate.position.y = 8 - i
-  for i in [0...bottom]
-    crate = stack.crates[top + i]
-    crate.position.x = x
-    crate.position.y = i + 1
+  isVisible: (camera, player) ->
+    offset = (camera.gameWidth - player.width) / 2 + @crates[0].width
+    @pos >= player.position.x - offset and
+    @pos < player.position.x + offset
 
-  stack.pos = x
-  stack.cleared = false
-
-exports.spawnStack = spawnStack
-exports.moveStack = moveStack
+module.exports = Stack

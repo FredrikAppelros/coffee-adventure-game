@@ -15,21 +15,23 @@ class Renderer
       @ctx.fillText text, x, y
       @ctx.strokeText text, x, y
 
-  drawRepeated: (entity, distance) ->
-    entity.draw @ctx, @camera, @drawSpriteBounds, @entities.player, true, distance
+  drawEndless: (entity, distance) ->
+    entity.draw @ctx, @camera, @drawSpriteBounds, 'endless', @entities.player, distance
 
   drawBackground: ->
-    @drawRepeated @entities.world, 2
+    @drawEndless @entities.world, 2
 
   drawGround: ->
-    @drawRepeated @entities.ground, 1
+    @drawEndless @entities.ground, 1
 
   drawCrates: ->
     for stack in @entities.stacks
-      c.draw @ctx, @camera, @drawSpriteBounds, @entities.player, false for c in stack.crates
+      if stack.isVisible @camera, @entities.player
+        for c in stack.crates
+          c.draw @ctx, @camera, @drawSpriteBounds, 'moving', @entities.player
 
   drawPlayer: ->
-    @entities.player.draw @ctx, @camera, @drawSpriteBounds
+    @entities.player.draw @ctx, @camera, @drawSpriteBounds, 'player'
 
   drawUI: (score, playing) ->
     @drawText score, 40, 20
