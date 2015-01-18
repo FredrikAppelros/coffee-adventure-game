@@ -1,15 +1,15 @@
-world = require './world'
+Entity = require './entity'
 
-player =
-  width: 1
-  height: 1
-  position:
-    x: 0
-    y: world.height / 2
-  velocity:
-    x: 2
-    y: 0
-  rotation: 0
-  mass: 1
+class Player extends Entity
+  constructor: (asset) ->
+    pos =
+      x: 0
+      y: 5
+    super asset, 1, 1, pos
 
-module.exports = player
+    @velocity =
+      x: 2
+      y: 0
+    @mass = 1
+
+module.exports = Player

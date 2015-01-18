@@ -1,11 +1,5 @@
-world = require './world'
-ground = require './ground'
-crates = require './crates'
-player = require './player'
-
 class Renderer
-  constructor: (@canvas, @assets) ->
-    @offsetX = (@canvas.width - @assets.bird.width) / 2
+  constructor: (@camera, @entities, @canvas, @drawSpriteBounds) ->
     @ctx = @canvas.getContext '2d'
     @ctx.fillStyle = '#fff'
     @ctx.strokeStyle = '#000'
@@ -21,47 +15,21 @@ class Renderer
       @ctx.fillText text, x, y
       @ctx.strokeText text, x, y
 
-  drawCyclic: (asset, y, distance) ->
-    x = -(player.position.x / world.width / distance * @canvas.width) % asset.width
-
-    while x < @canvas.width
-      asset.draw @ctx, x, y
-      x += asset.width
+  drawRepeated: (entity, distance) ->
+    entity.draw @ctx, @camera, @drawSpriteBounds, @entities.player, true, distance
 
   drawBackground: ->
-    @drawCyclic @assets.background, 0, 2
+    @drawRepeated @entities.world, 2
 
   drawGround: ->
-    y = (world.height - ground.height) / world.height * @canvas.height
-    @drawCyclic @assets.ground, y, 1
+    @drawRepeated @entities.ground, 1
 
   drawCrates: ->
-    asset = @assets.crate
-
-    size = crates.height / world.height * @canvas.height
-    x = (crates.position.x - player.position.x) / world.width * @canvas.width + @offsetX
-
-    y = 0
-    for i in [0...crates.top]
-      asset.draw @ctx, x, y, size, size
-      y += size
-
-    y = (world.height - ground.height - crates.height) / world.height * @canvas.height
-    for i in [0...crates.bottom]
-      asset.draw @ctx, x, y, size, size
-      y -= size
+    for stack in @entities.stacks
+      c.draw @ctx, @camera, @drawSpriteBounds, @entities.player, false for c in stack.crates
 
   drawPlayer: ->
-    x = @offsetX
-    y = (1 - (player.position.y / world.height)) * (@canvas.height - @assets.bird.height)
-
-    tx = x + @assets.bird.width / 2
-    ty = y + @assets.bird.height / 2
-    @ctx.translate tx, ty
-    @ctx.rotate player.rotation
-    @ctx.translate -tx, -ty
-
-    @assets.bird.draw @ctx, x, y
+    @entities.player.draw @ctx, @camera, @drawSpriteBounds
 
   drawUI: (score, playing) ->
     @drawText score, 40, 20

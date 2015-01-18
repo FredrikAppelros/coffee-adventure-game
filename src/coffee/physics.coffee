@@ -1,20 +1,26 @@
 events = require 'events'
-world = require './world'
-ground = require './ground'
-crates = require './crates'
-player = require './player'
+World = require './world'
+Ground = require './ground'
+crate = require './crate'
 
 class Simulator extends events.EventEmitter
-  constructor: (@gravity = -20, hz = 100) ->
+  constructor: (@camera, @entities, @assets, @gravity = -20, hz = 100) ->
     @dt = 1 / hz
     @flapForce = 5 * hz
 
   detectCollisions: ->
-    collided = player.position.y <= ground.height
+    ground = @entities.ground
+    player = @entities.player
+
+    collided = ground.hasCollided player
+    for stack in @entities.stacks
+      collided = collided or c.hasCollided player for c in stack.crates
 
     @emit 'collision' if collided
 
   simulate: (flapping) ->
+    player = @entities.player
+
     force = if flapping then @flapForce else 0
 
     a = force / player.mass + @gravity
@@ -34,13 +40,16 @@ class Simulator extends events.EventEmitter
     if player.position.y < 0
       player.position.y = 0
       player.velocity.y = 0
-    if player.position.y > world.height
-      player.position.y = world.height
+    if player.position.y > @camera.gameHeight - player.height
+      player.position.y = @camera.gameHeight - player.height
       player.velocity.y = 0
 
-    if not crates.cleared and player.position.x >= crates.position.x
-      crates.cleared = true
-      @emit 'score'
+    for stack in @entities.stacks
+      if not stack.cleared and player.position.x >= stack.pos
+        stack.cleared = true
+        @emit 'score'
+      if stack.pos < player.position.x - 7
+        crate.moveStack stack, stack.pos + 15
 
     @detectCollisions()
 

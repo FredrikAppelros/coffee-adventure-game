@@ -20,7 +20,7 @@ class Asset
       ctx.drawImage @sprite, sx, sy
 
 assets =
-  background: new Asset 'img/background.png'
+  world: new Asset 'img/world.png'
   ground: new Asset 'img/ground.png'
   bird: new Asset 'img/bird.png'
   crate: new Asset 'img/crate.png'

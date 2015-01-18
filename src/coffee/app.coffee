@@ -1,16 +1,23 @@
 assets = require './assets'
+Camera = require './camera'
+World = require './world'
+Ground = require './ground'
+Player = require './player'
+crate = require './crate'
 Simulator = require './physics'
 Renderer = require './renderer'
 
 playing = true
 flapping = false
+drawSpriteBounds = false
 score = 0
 
 last = new Date
 dt = 0
 
 canvas = document.getElementById 'canvas'
-simulator = new Simulator
+player = undefined
+simulator = undefined
 renderer = undefined
 
 main = ->
@@ -27,10 +34,6 @@ main = ->
 
   window.requestAnimationFrame main if playing
 
-start = (assets) ->
-  renderer = new Renderer canvas, assets
-  main()
-
 onClick = (event) ->
   flapping = true
   event.stopPropagation()
@@ -41,8 +44,25 @@ onCollision = ->
 onScore = ->
   score++
 
-canvas.addEventListener 'click', onClick
-simulator.on 'collision', onCollision
-simulator.on 'score', onScore
+start = (assets) ->
+  camera = new Camera canvas
+  entities =
+    world: new World assets.world
+    ground: new Ground assets.ground
+    player: new Player assets.bird
+    stacks: [
+      crate.spawnStack(assets.crate, 7)
+      crate.spawnStack(assets.crate, 12)
+      crate.spawnStack(assets.crate, 17)
+    ]
+
+  simulator = new Simulator camera, entities, assets
+  renderer = new Renderer camera, entities, canvas, drawSpriteBounds
+
+  canvas.addEventListener 'click', onClick
+  simulator.on 'collision', onCollision
+  simulator.on 'score', onScore
+
+  main()
 
 assets.loadAssets start

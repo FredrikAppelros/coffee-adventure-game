@@ -1,5 +1,13 @@
-ground =
-  width: 1
-  height: 1
+Entity = require './entity'
 
-module.exports = ground
+class Ground extends Entity
+  constructor: (asset) ->
+    pos =
+      x: 0
+      y: 0
+    super asset, 1, 1, pos
+
+  hasCollided: (other) ->
+    other.position.y < @position.y + @height
+
+module.exports = Ground

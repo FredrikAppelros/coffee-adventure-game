@@ -1,5 +1,10 @@
-world =
-  width: 10
-  height: 10
+Entity = require './entity'
 
-module.exports = world
+class World extends Entity
+  constructor: (asset) ->
+    pos =
+      x: 0
+      y: 0
+    super asset, 12, 9, pos
+
+module.exports = World
