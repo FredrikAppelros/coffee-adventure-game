@@ -1,5 +1,9 @@
 class Entity
-  constructor: (@asset, @width, @height, @position, @rotation = 0) ->
+  constructor: (@asset, @width, @height) ->
+    @position =
+      x: 0
+      y: 0
+    @rotation = 0
 
   draw: (ctx, camera, stroke, type, player, distance) ->
     w = camera.toScreenX @width

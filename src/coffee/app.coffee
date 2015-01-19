@@ -9,16 +9,17 @@ Stack = require './crate'
 Simulator = require './physics'
 Renderer = require './renderer'
 
-playing = true
 flapping = false
 drawSpriteBounds = false
-score = 0
 
-last = new Date
+score = 0
+last = 0
 dt = 0
 
+state = 'start'
+
 canvas = document.getElementById 'canvas'
-player = undefined
+entities = undefined
 simulator = undefined
 renderer = undefined
 
@@ -27,14 +28,23 @@ main = ->
   dt += (now - last) / 1000
   last = now
 
-  while playing and dt >= simulator.dt
+  while state is 'playing' and dt >= simulator.dt
     simulator.simulate flapping
     flapping = false
     dt -= simulator.dt
 
-  renderer.render score, playing
+  renderer.render state, score
 
-  window.requestAnimationFrame main if playing
+  window.requestAnimationFrame main
+
+reset = ->
+  entities.player.position.x = 0
+  entities.player.position.y = 5
+  entities.player.velocity.y = 0
+  s.move 7 + i * 5 for s, i in entities.stacks
+  score = 0
+  dt = 0
+  last = new Date
 
 start = ([assets, sounds]) ->
   camera = new Camera canvas
@@ -44,21 +54,26 @@ start = ([assets, sounds]) ->
     ground: new Ground assets.ground
     player: new Player assets.bird
     stacks: [
-      new Stack assets.crate, world, 7
-      new Stack assets.crate, world, 12
-      new Stack assets.crate, world, 17
+      new Stack assets.crate, world
+      new Stack assets.crate, world
+      new Stack assets.crate, world
     ]
-
   simulator = new Simulator camera, entities, assets
   renderer = new Renderer camera, entities, canvas, drawSpriteBounds
 
+  reset()
+
   onClick = (event) ->
     flapping = true
-    sounds.flap.play() if playing
+    sounds.flap.play()
+    unless state is 'playing'
+      reset()
+      state = 'playing'
+
     event.stopPropagation()
 
   onCollision = ->
-    playing = false
+    state = 'over'
     sounds.collide.play()
 
   onScore = ->

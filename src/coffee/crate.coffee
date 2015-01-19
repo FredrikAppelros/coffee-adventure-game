@@ -2,8 +2,8 @@ Entity = require './entity'
 random = require './random'
 
 class Crate extends Entity
-  constructor: (asset, pos) ->
-    super asset, 1, 1, pos
+  constructor: (asset) ->
+    super asset, 1, 1
 
   hasCollided: (other) ->
     other.position.x >= @position.x - other.width and
@@ -12,12 +12,10 @@ class Crate extends Entity
     other.position.y < @position.y + @height
 
 class Stack
-  constructor: (asset, world, @pos, gap = 3) ->
+  constructor: (asset, world, @pos = 0, gap = 3) ->
     @maxHeight = world.height - 1
     @height = @maxHeight - gap
-    @crates = (new Crate asset, x: 0, y: 0 for i in [0...@height])
-
-    @move @pos
+    @crates = (new Crate asset for i in [0...@height])
 
   move: (pos) ->
     @pos = pos

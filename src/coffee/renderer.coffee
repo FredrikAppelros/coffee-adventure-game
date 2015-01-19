@@ -33,15 +33,16 @@ class Renderer
   drawPlayer: ->
     @entities.player.draw @ctx, @camera, @drawSpriteBounds, 'player'
 
-  drawUI: (score, playing) ->
-    @drawText score, 40, 20
-    @drawText 'Game Over', 80, (@canvas.height - 80) / 2 if not playing
+  drawUI: (state, score) ->
+    @drawText 'Tap to flap', 80, (@canvas.height - 80) / 2 if state is 'start'
+    @drawText score, 40, 20 unless state is 'start'
+    @drawText 'Game Over', 80, (@canvas.height - 80) / 2 if state is 'over'
 
-  render: (score, playing) ->
+  render: (state, score) ->
     @drawBackground()
     @drawGround()
     @drawCrates()
     @drawPlayer()
-    @drawUI score, playing
+    @drawUI state, score
 
 module.exports = Renderer
