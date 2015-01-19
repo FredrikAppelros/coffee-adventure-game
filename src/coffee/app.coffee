@@ -73,6 +73,11 @@ start = ([assets, sounds]) ->
   onCollision = ->
     state = 'over'
     sounds.collide.play()
+    canvas.removeEventListener 'click', onClick
+    setTimeout (->
+      canvas.addEventListener 'click', onClick
+      state = 'ready'
+    ), 1000
 
   onScore = ->
     score++
