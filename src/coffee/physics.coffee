@@ -15,9 +15,13 @@ class Simulator extends events.EventEmitter
     for stack in @entities.stacks
       collided = collided or c.hasCollided player for c in stack.crates
 
+    if collided
+      player.velocity.y = 0
+      player.velocity.rot = Math.PI * 3
+
     @emit 'collision' if collided
 
-  simulate: (flapping) ->
+  simulate: (state, flapping) ->
     player = @entities.player
 
     force = if flapping then @flapForce else 0
@@ -26,7 +30,7 @@ class Simulator extends events.EventEmitter
 
     player.velocity.y = 0 if player.velocity.y < 0 and a > 0
 
-    player.velocity.y += a * @dt
+    player.velocity.y += a * @dt unless state is 'start'
 
     if player.velocity.y < -25
       player.velocity.y = -25
@@ -36,20 +40,23 @@ class Simulator extends events.EventEmitter
     player.position.x += player.velocity.x * @dt
     player.position.y += player.velocity.y * @dt
 
-    if player.position.y < 0
-      player.position.y = 0
-      player.velocity.y = 0
+    player.rotation += player.velocity.rot * @dt
+
+    @detectCollisions() if state is 'playing'
+
+    if player.position.y < @entities.ground.height
+      player.position.y = @entities.ground.height
+      player.velocity.x = 0
+      player.velocity.rot = 0
     if player.position.y > @camera.gameHeight - player.height
       player.position.y = @camera.gameHeight - player.height
       player.velocity.y = 0
 
     for stack in @entities.stacks
-      if not stack.cleared and player.position.x >= stack.pos
+      if state is 'playing' and not stack.cleared and player.position.x >= stack.pos
         stack.cleared = true
         @emit 'score'
       if stack.cleared and not stack.isVisible @camera, player
         stack.move stack.pos + 15
-
-    @detectCollisions()
 
 module.exports = Simulator

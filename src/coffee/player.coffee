@@ -5,8 +5,9 @@ class Player extends Entity
     super asset, 1, 1
 
     @velocity =
-      x: 2
+      x: 0
       y: 0
+      rot: 0
     @mass = 1
 
 module.exports = Player

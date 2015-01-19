@@ -34,9 +34,9 @@ class Renderer
     @entities.player.draw @ctx, @camera, @drawSpriteBounds, 'player'
 
   drawUI: (state, score) ->
-    @drawText 'Tap to flap', 80, (@canvas.height - 80) / 2 if state is 'start'
+    @drawText 'TAP TO FLAP', 80, (@canvas.height - 80) / 2 if state is 'start'
     @drawText score, 40, 20 unless state is 'start'
-    @drawText 'Game Over', 80, (@canvas.height - 80) / 2 if state is 'over'
+    @drawText 'GAME OVER', 80, (@canvas.height - 80) / 2 if state is 'over'
 
   render: (state, score) ->
     @drawBackground()
