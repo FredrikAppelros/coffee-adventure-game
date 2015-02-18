@@ -1,9 +1,6 @@
 {
   "name": "game",
-  "version": "0.0.0",
-  "description": "Game",
-  "author": "Fredrik Appelros",
-  "license": "ISC",
+  "private": true,
   "browserify": {
     "transform": [
       "coffeeify"
