@@ -20,7 +20,7 @@ state = 'start'
 
 canvas = document.getElementById 'canvas'
 
-start = ([assets, sounds]) ->
+init = ([assets, sounds]) ->
   camera = new Camera canvas
   world = new World assets.world
   entities =
@@ -50,8 +50,10 @@ start = ([assets, sounds]) ->
     player.position.x = 0
     player.position.y = 5
     player.rotation = 0
+    player.velocity.x = 0
     player.velocity.y = 0
     player.velocity.rot = 0
+    player.acceleration.x = 0.1
 
     entities.stacks = (new Stack assets.crate, world for i in [0...3])
     s.move 7 + i * 5 for s, i in entities.stacks
@@ -60,12 +62,15 @@ start = ([assets, sounds]) ->
     dt = 0
     last = new Date
 
+  start = ->
+    reset()
+    entities.player.velocity.x = 2
+
   onClick = (event) ->
     flapping = true
     sounds.flap.play()
     unless state is 'playing'
-      reset()
-      entities.player.velocity.x = 2
+      start()
       state = 'playing'
 
     event.stopPropagation()
@@ -89,4 +94,4 @@ start = ([assets, sounds]) ->
   reset()
   main()
 
-Q.all([asset.loadAssets(), sound.loadSounds()]).then start
+Q.all([asset.loadAssets(), sound.loadSounds()]).then init

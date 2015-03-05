@@ -11,13 +11,8 @@ class Asset
         @height = img.height
         resolve this
 
-  draw: (ctx, sx, sy, sw, sh, dx, dy, dw, dh) ->
-    if dx?
-      ctx.drawImage @sprite, sx, sy, sw, sh, dx, dy, dw, dh
-    else if sw?
-      ctx.drawImage @sprite, sx, sy, sw, sh
-    else
-      ctx.drawImage @sprite, sx, sy
+  draw: (ctx, x, y, w, h) ->
+    ctx.drawImage @sprite, x, y, w, h
 
 assets =
   world: new Asset 'img/world.png'

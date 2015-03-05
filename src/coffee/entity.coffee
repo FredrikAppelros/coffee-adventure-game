@@ -5,7 +5,7 @@ class Entity
       y: 0
     @rotation = 0
 
-  draw: (ctx, camera, stroke, type, player, distance) ->
+  draw: (ctx, camera, type, player, distance) ->
     w = camera.toScreenX @width
     h = camera.toScreenY @height
 
@@ -29,7 +29,6 @@ class Entity
 
     draw = =>
       @asset.draw ctx, x, y, w, h
-      ctx.strokeRect x, y, w, h if stroke
       x += w
 
     draw()

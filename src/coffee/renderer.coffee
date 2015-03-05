@@ -1,5 +1,5 @@
 class Renderer
-  constructor: (@camera, @entities, @canvas, @drawSpriteBounds) ->
+  constructor: (@camera, @entities, @canvas) ->
     @ctx = @canvas.getContext '2d'
     @ctx.fillStyle = '#fff'
     @ctx.strokeStyle = '#000'
@@ -16,7 +16,7 @@ class Renderer
       @ctx.strokeText text, x, y
 
   drawEndless: (entity, distance) ->
-    entity.draw @ctx, @camera, @drawSpriteBounds, 'endless', @entities.player, distance
+    entity.draw @ctx, @camera, 'endless', @entities.player, distance
 
   drawBackground: ->
     @drawEndless @entities.world, 2
@@ -28,10 +28,10 @@ class Renderer
     for stack in @entities.stacks
       if stack.isVisible @camera, @entities.player
         for c in stack.crates
-          c.draw @ctx, @camera, @drawSpriteBounds, 'moving', @entities.player
+          c.draw @ctx, @camera, 'moving', @entities.player
 
   drawPlayer: ->
-    @entities.player.draw @ctx, @camera, @drawSpriteBounds, 'player'
+    @entities.player.draw @ctx, @camera, 'player'
 
   drawUI: (state, score) ->
     switch state
