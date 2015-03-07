@@ -28,7 +28,8 @@ class Entity
       ctx.translate -tx, -ty
 
     draw = =>
-      @asset.draw ctx, x, y, w, h
+      ctx.fillRect x, y, w, h
+      ctx.strokeRect x, y, w, h
       x += w
 
     draw()

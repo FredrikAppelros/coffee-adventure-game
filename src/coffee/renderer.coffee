@@ -34,15 +34,7 @@ class Renderer
     @entities.player.draw @ctx, @camera, 'player'
 
   drawUI: (state, score) ->
-    switch state
-      when 'start'
-        @drawText 'TAP TO FLAP', 80, (@canvas.height - 80) / 2
-      when 'playing', 'over', 'ready'
-        @drawText score, 40, 20
-        if state is 'over' or state is 'ready'
-          @drawText 'GAME OVER', 80, (@canvas.height - 80) / 2
-        if state is 'ready'
-          @drawText 'TAP TO RESTART', 40, (@canvas.height - 80) / 2 + 100
+    # We could draw some text here!
 
   render: (state, score) ->
     @drawBackground()

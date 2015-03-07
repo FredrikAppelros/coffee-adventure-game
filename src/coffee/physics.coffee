@@ -18,13 +18,12 @@ class Simulator extends events.EventEmitter
       if state is 'playing' and not stack.cleared and player.position.x >= stack.pos
         stack.cleared = true
         @emit 'score'
-      if stack.cleared and not stack.isVisible @camera, player
-        stack.move stack.pos + 15
+      # Sometimes, the stacks need to move
 
   calculateAcceleration: (flapping) ->
     player = @entities.player
     force = if flapping then @flapForce else 0
-    player.acceleration.y = force / player.mass + @gravity
+    player.acceleration.y = 0 # This doesn't seem right...
 
   calculateVelocity: (state) ->
     player = @entities.player
@@ -36,7 +35,7 @@ class Simulator extends events.EventEmitter
 
   calculatePosition: (state) ->
     player = @entities.player
-    player.position.x += player.velocity.x * @dt
+    # Hmmm, seems like something is missing here
     player.position.y += player.velocity.y * @dt
     player.rotation += player.velocity.rot * @dt
 
@@ -54,9 +53,7 @@ class Simulator extends events.EventEmitter
   detectCollisions: ->
     player = @entities.player
 
-    collided = @entities.ground.hasCollided player
-    for stack in @entities.stacks
-      collided = collided or c.hasCollided player for c in stack.crates
+    collided = false # Hmm, we should probably do something here
 
     if collided
       player.velocity.y = 0

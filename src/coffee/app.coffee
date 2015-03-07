@@ -55,7 +55,7 @@ init = ([assets, sounds]) ->
     player.velocity.rot = 0
     player.acceleration.x = 0.1
 
-    entities.stacks = (new Stack assets.crate, world for i in [0...3])
+    # Perhaps we should create some stacks of crates first...
     s.move 7 + i * 5 for s, i in entities.stacks
 
     score = 0
@@ -68,7 +68,6 @@ init = ([assets, sounds]) ->
 
   onClick = (event) ->
     flapping = true
-    sounds.flap.play()
     unless state is 'playing'
       start()
       state = 'playing'
@@ -77,7 +76,6 @@ init = ([assets, sounds]) ->
 
   onCollision = ->
     state = 'over'
-    sounds.collide.play()
     canvas.removeEventListener 'click', onClick
     setTimeout (->
       canvas.addEventListener 'click', onClick
