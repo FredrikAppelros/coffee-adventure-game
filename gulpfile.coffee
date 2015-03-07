@@ -17,6 +17,10 @@ paths =
     'src/coffee/app.coffee'
   ]
 
+printError = (err) ->
+  console.log err
+  @emit 'end'
+
 gulp.task 'coffee', ->
   bundle = transform (files) ->
     browserify(
@@ -27,6 +31,7 @@ gulp.task 'coffee', ->
 
   gulp.src(paths.entry)
     .pipe(bundle)
+    .on('error', printError)
     .pipe(sourcemaps.init loadMaps: true)
       .pipe(uglify())
       .pipe(rename extname: '.min.js')
@@ -37,6 +42,7 @@ gulp.task 'less', ->
   gulp.src(paths.less)
     .pipe(sourcemaps.init())
       .pipe(less plugins: [cleancss])
+      .on('error', printError)
       .pipe(rename extname: '.min.css')
     .pipe(sourcemaps.write())
     .pipe(gulp.dest paths.css)
