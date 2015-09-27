@@ -1,19 +1,22 @@
 gulp = require 'gulp'
 browserify = require 'browserify'
-transform = require 'vinyl-transform'
+source = require 'vinyl-source-stream'
+buffer = require 'vinyl-buffer'
 sourcemaps = require 'gulp-sourcemaps'
 uglify = require 'gulp-uglify'
 rename = require 'gulp-rename'
 less = require 'gulp-less'
-cleancss = new (require 'less-plugin-clean-css')
+minifyCSS = require 'gulp-minify-css'
 browserSync = require 'browser-sync'
 
 paths =
   html: 'app/html/**/*.html'
   coffee: 'src/coffee/**/*.coffee'
   less: 'src/less/**/*.less'
+  js: 'app/js'
   css: 'app/css'
-  entry: [
+  app: 'app.js'
+  entries: [
     'src/coffee/app.coffee'
   ]
 
@@ -22,27 +25,28 @@ printError = (err) ->
   @emit 'end'
 
 gulp.task 'coffee', ->
-  bundle = transform (files) ->
-    browserify(
-      entries: files
-      extensions: ['.coffee']
-      debug: true
-    ).bundle()
+  b = browserify(
+    entries: paths.entries
+    extensions: ['.coffee']
+    debug: true
+  )
 
-  gulp.src(paths.entry)
-    .pipe(bundle)
+  b.bundle()
+    .pipe(source paths.app)
+    .pipe(buffer())
     .on('error', printError)
     .pipe(sourcemaps.init loadMaps: true)
       .pipe(uglify())
       .pipe(rename extname: '.min.js')
     .pipe(sourcemaps.write '.')
-    .pipe(gulp.dest 'app/js')
+    .pipe(gulp.dest paths.js)
 
 gulp.task 'less', ->
   gulp.src(paths.less)
     .pipe(sourcemaps.init())
-      .pipe(less plugins: [cleancss])
+      .pipe(less())
       .on('error', printError)
+      .pipe(minifyCSS())
       .pipe(rename extname: '.min.css')
     .pipe(sourcemaps.write())
     .pipe(gulp.dest paths.css)
