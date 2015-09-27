@@ -21,7 +21,7 @@ paths =
   ]
 
 printError = (err) ->
-  console.log err
+  console.error err
   @emit 'end'
 
 gulp.task 'coffee', ->
@@ -32,9 +32,9 @@ gulp.task 'coffee', ->
   )
 
   b.bundle()
+    .on('error', printError)
     .pipe(source paths.app)
     .pipe(buffer())
-    .on('error', printError)
     .pipe(sourcemaps.init loadMaps: true)
       .pipe(uglify())
       .pipe(rename extname: '.min.js')
